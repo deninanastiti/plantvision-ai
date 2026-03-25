@@ -4,7 +4,6 @@ import numpy as np
 from PIL import Image
 import json
 
-# ---------------- CONFIG ----------------
 st.set_page_config(
     page_title="PlantVision AI",
     layout="wide"
@@ -15,7 +14,6 @@ MODEL_PATH = "plant_mobilenet_model.keras"
 CLASS_NAMES_PATH = "class_names.json"
 
 
-# ---------------- LOAD FUNCTIONS ----------------
 @st.cache_resource
 def load_model():
     return tf.keras.models.load_model(MODEL_PATH)
@@ -27,7 +25,6 @@ def load_class_names():
         return json.load(f)
 
 
-# ---------------- PREPROCESS ----------------
 def preprocess_image(image: Image.Image) -> np.ndarray:
     image = image.convert("RGB")
     image = image.resize(IMG_SIZE)
@@ -36,7 +33,6 @@ def preprocess_image(image: Image.Image) -> np.ndarray:
     return img_array
 
 
-# ---------------- PREDICTION ----------------
 def predict_image(model, class_names, image: Image.Image):
     img_array = preprocess_image(image)
     prediction = model.predict(img_array, verbose=0)[0]
@@ -54,7 +50,6 @@ def predict_image(model, class_names, image: Image.Image):
     return predicted_class, confidence, top_3_predictions
 
 
-# ---------------- HEADER ----------------
 st.title("PlantVision AI")
 
 st.markdown(
@@ -78,15 +73,12 @@ st.markdown(
 
 st.divider()
 
-
-# ---------------- MAIN ----------------
 try:
     model = load_model()
     class_names = load_class_names()
 
     left_col, right_col = st.columns([1, 1], gap="large")
 
-    # -------- LEFT: UPLOAD --------
     with left_col:
         st.subheader("Upload Image")
 
@@ -98,10 +90,8 @@ try:
 
         if uploaded_file is not None:
             image = Image.open(uploaded_file)
-               st.image(image, caption="Uploaded Image") 
-        
+            st.image(image, caption="Uploaded Image")
 
-    # -------- RIGHT: RESULT --------
     with right_col:
         st.subheader("Prediction Output")
 
@@ -124,16 +114,15 @@ try:
                 col1.metric("Predicted Class", predicted_class)
                 col2.metric("Confidence", f"{confidence:.2f}%")
 
-                st.markdown("### Top 3 Predictions")
+                st.markdown("### Top Predictions")
 
                 for label, score in top_3_predictions:
-                    st.write(f"{label}")
+                    st.write(label)
                     st.progress(min(int(score), 100))
                     st.caption(f"{score:.2f}%")
 
     st.divider()
 
-    # ---------------- FOOTER ----------------
     st.markdown(
         """
         **Model Information**
