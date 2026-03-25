@@ -99,10 +99,10 @@ try:
         if uploaded_file is not None:
             image = Image.open(uploaded_file)
             st.image(
-                image,
-                caption="Uploaded Image",
-                use_container_width=True
-            )
+               image,
+               caption="Uploaded Image",
+               width="stretch"
+         )
 
     # -------- RIGHT: RESULT --------
     with right_col:
@@ -113,7 +113,7 @@ try:
         else:
             image = Image.open(uploaded_file)
 
-            if st.button("Run Prediction", use_container_width=True):
+            if st.button("Run Prediction", width="stretch"): 
                 with st.spinner("Processing image..."):
                     predicted_class, confidence, top_3_predictions = predict_image(
                         model,
